@@ -1,5 +1,7 @@
+import { ACTUALIZAR } from './textos.mjs'
+
 //TT ESTADO CONEXION
-export function EXTADO_CONEXION(data) {
+export function ESTADO_CONEXION(data) {
   let escuchar = false
   setInterval(() => {
     // SS sin conexion
@@ -12,9 +14,8 @@ export function EXTADO_CONEXION(data) {
       const num = data.globalVendorArgs?.host?.phone
       const name = data.globalVendorArgs?.host?.name
       console.log(`Conectado a: ${name} con numero: ${num}`)
+      ACTUALIZAR()
       escuchar = false
-    } else {
-      console.log('asdasd')
     }
-  }, 60 * 1000)
+  }, 10 * 1000)
 }

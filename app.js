@@ -1,7 +1,9 @@
 import { createBot, createProvider, createFlow, MemoryDB } from '@builderbot/bot'
 import { BaileysProvider } from '@builderbot/provider-baileys'
 // TT MODULOS
+import { ESTADO_CONEXION } from './src/sistema/estado_Conexion.mjs'
 import { CRONO } from './src/funciones/notificar.mjs'
+import { ACTUALIZAR } from './src/sistema/textos.mjs'
 import { flowBienvenidad } from './src/flujos/flowBienvenidad.mjs'
 
 const FLUJOS_ENTRADA = [flowBienvenidad]
@@ -15,8 +17,9 @@ const main = async () => {
   const adapterProvider = createProvider(BaileysProvider)
 
   //SS DEBUGS
-  //EXTADO_CONEXION(adapterProvider)
+  ESTADO_CONEXION(adapterProvider)
   CRONO(adapterProvider)
+  ACTUALIZAR()
 
   const { httpServer } = await createBot({
     flow: adapterFlow,

@@ -1,27 +1,26 @@
 import cron from 'node-cron'
 import 'dotenv/config'
 //TT MODULOS
-import { ObtenerHorario } from '../APIs/APIGoogleApp.mjs'
+import { ObtenerDatos } from '../APIs/APIGoogleApp.mjs'
 import { ObtenerFechaActual, ObtenerHoraActual, CompararFechas, Esperar } from '../funciones/tiempo.mjs'
 
 //TT VARIABLES
 let AGENDA = []
 const intMensajes = 10
-const numero = '573013523033' + '@s.whatsapp.net'
+//const numero = '573013523033' + '@s.whatsapp.net'
 
 //TT EVENTO CRONO
 export async function CRONO(proveedor) {
-  cron.schedule('* * * * *', async () => {
+  cron.schedule('50 * * * *', async () => {
     //SS Si esta conectado
     if (proveedor.store?.state?.connection === 'open') {
-      const agenda = await ObtenerHorario()
+      const agenda = await ObtenerDatos()
       if (agenda !== null) {
         //SS Guardar agenda
         AGENDA = agenda
         EnviarMensajes(proveedor)
       } else {
-        //Si hay error al cargar base de datos
-        await proveedor.sendText(numero, 'error al cargar base de datos')
+        console.error('Error al conectar con API')
       }
     } else {
       //

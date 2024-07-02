@@ -4,17 +4,17 @@ import 'dotenv/config'
 const urlSheet = process.env.GOOGLE_APP_URL + '?'
 
 //TT PETICIONES
-const ObtenerAgenda = {
+const DATOS = {
   functionName: 'ObtenerAgenda',
-  urlSheet: process.env.SHEET_URL,
-  pagina: process.env.PAGINA_AGENDA
+  urlSheet: process.env.SHEET_URL
 }
 
 //TT Realizar la petición GET
-export async function ObtenerHorario() {
+export async function ObtenerDatos(pag = process.env.PAG_ACTUA) {
   try {
-    const queryString = Object.keys(ObtenerAgenda)
-      .map((key) => key + '=' + encodeURIComponent(ObtenerAgenda[key]))
+    DATOS.pagina = pag
+    const queryString = Object.keys(DATOS)
+      .map((key) => key + '=' + encodeURIComponent(DATOS[key]))
       .join('&')
     const response = await fetch(urlSheet + queryString)
     const data = await response.json()
@@ -26,4 +26,4 @@ export async function ObtenerHorario() {
   }
 }
 //FF Pruebas
-await ObtenerHorario()
+//await ObtenerDatos(process.env.PAG_MSJ)
