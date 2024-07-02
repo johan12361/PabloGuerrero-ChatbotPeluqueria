@@ -1,13 +1,13 @@
+import 'dotenv/config'
+
 //TT URL API
-const urlSheet =
-  'https://script.google.com/macros/s/AKfycbw3tspy76LhTA3nAC83-TPvhkxuUFzbhuYdEh77c2i62owOiKlXPS6GXenY3i-oG5Yt/exec?'
+const urlSheet = process.env.GOOGLE_APP_URL + '?'
 
 //TT PETICIONES
 const ObtenerAgenda = {
   functionName: 'ObtenerAgenda',
-  urlSheet:
-    'https://docs.google.com/spreadsheets/d/1S281Ikj5DEFWEltXx6W3Q5NMUbpwJ3lAbYH8nI2RQJw/edit?usp=sharing',
-  pagina: 'ACTUAL'
+  urlSheet: process.env.SHEET_URL,
+  pagina: process.env.PAGINA_AGENDA
 }
 
 //TT Realizar la petición GET
@@ -26,4 +26,4 @@ export async function ObtenerHorario() {
   }
 }
 //FF Pruebas
-//await ObtenerHorario()
+await ObtenerHorario()
