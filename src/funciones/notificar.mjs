@@ -1,7 +1,7 @@
 import cron from 'node-cron'
 import 'dotenv/config'
 //TT MODULOS
-import { ObtenerHorario } from '../APIs/APISheets.mjs'
+import { ObtenerHorario } from '../APIs/APIGoogleApp.mjs'
 import { ObtenerFechaActual, ObtenerHoraActual, CompararFechas, Esperar } from '../funciones/tiempo.mjs'
 
 //TT VARIABLES
