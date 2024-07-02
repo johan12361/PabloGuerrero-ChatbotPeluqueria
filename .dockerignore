@@ -4,3 +4,4 @@ node_modules
 bot.qr.png
 *.log
 .gitignore
+eslintrc.json
