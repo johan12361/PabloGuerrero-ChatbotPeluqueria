@@ -7,6 +7,11 @@ import { BorrarSaltos } from '../funciones/formatearIA.mjs'
 const apiKey = process.env.GEMINI_API_KEY
 const genAI = new GoogleGenerativeAI(apiKey)
 
+// TT sesiones
+const HistBienv = {}
+const HistAgendar = {}
+const HistModificar = {}
+
 //TT Ruta de guion
 const GUIONES = {
   WELCOME: fs.readFileSync('./src/guiones/bienvenida.txt', 'utf8'),
@@ -45,10 +50,6 @@ const generationConfig = {
   maxOutputTokens: 8192,
   responseMimeType: 'text/plain'
 }
-// TT sesiones
-const HistBienv = {}
-const HistAgendar = {}
-const HistModificar = {}
 // SS obtener id
 function getSession(userId, guion) {
   if (guion.estado === 'WELCOME') {
@@ -61,8 +62,7 @@ function getSession(userId, guion) {
       HistAgendar[userId] = []
     }
     return HistAgendar[userId]
-  }
-  else if (guion.estado === 'MODIFICAR') {
+  } else if (guion.estado === 'MODIFICAR') {
     if (!HistModificar[userId]) {
       HistModificar[userId] = []
     }
@@ -88,5 +88,19 @@ export async function EnviarGemini(promp, userId, guion) {
     return BorrarSaltos(result.response.text())
   } catch (error) {
     return null
+  }
+}
+
+//TT LIMPIAR MEMORIA
+export function LimpiarHistorial(userId) {
+  console.info(`Se limpia historial para: ${userId}`)
+  if (HistBienv[userId]) {
+    HistBienv[userId] = null
+  }
+  if (HistAgendar[userId]) {
+    HistAgendar[userId] = null
+  }
+  if (HistModificar[userId]) {
+    HistModificar[userId] = null
   }
 }

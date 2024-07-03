@@ -1,13 +1,17 @@
 import { addKeyword, EVENTS } from '@builderbot/bot'
+import { LimpiarHistorial } from '../APIs/APIgeminiIA.mjs'
 
 // TT Objeto para almacenar temporizadores para cada usuario
 const timers = {}
 
 // TT Flujo para manejar la inactividad
-export const idleFlow = addKeyword(EVENTS.ACTION).addAction(async (ctx, { gotoFlow, flowDynamic, endFlow }) => {
-  console.log(`Sesion Cerrada para ${ctx.name} con el numero: ${ctx.from}`)
-  return endFlow()
-})
+export const idleFlow = addKeyword(EVENTS.ACTION).addAction(
+  async (ctx, { gotoFlow, flowDynamic, endFlow }) => {
+    console.log(`Sesion Cerrada para ${ctx.name} con el numero: ${ctx.from}`)
+    LimpiarHistorial(ctx.from)
+    return endFlow()
+  }
+)
 
 // TT Función para iniciar el temporizador de inactividad para un usuario
 export const start = (ctx, gotoFlow, sgs) => {

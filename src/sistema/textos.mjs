@@ -10,8 +10,7 @@ export const MENSAJES = {
 }
 //TT INFO
 export const INFO = {
-  SHOP: '',
-  CHATBOT: ''
+  CALENDARIO: ''
 }
 
 //TT ACTUALIZAR
@@ -23,5 +22,9 @@ export async function ACTUALIZAR() {
     MENSAJES.RECORDATORIO = msj[0].RECORDATORIO
     MENSAJES.SIN_CITAS_DISP = msj[0].CITAS_NO_DISPONIBLES
   }
-  console.log(MENSAJES)
+  const inf = await ObtenerDatos(process.env.PAG_INFO)
+  if (msj !== null) {
+    INFO.CALENDARIO = inf[0].CALENDARIO
+  }
+  console.log(INFO)
 }

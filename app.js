@@ -16,18 +16,27 @@ const PORT = process.env.PORT ?? 3000
 const main = async () => {
   const adapterDB = new MemoryDB()
   const adapterFlow = createFlow(FLUJOS_ENTRADA)
-  const adapterProvider = createProvider(BaileysProvider)
+  const adapterProvider = createProvider(BaileysProvider, { timeRelease: 43200000 }) //limpiar memoria cada 12 horas
 
   //SS DEBUGS
   ESTADO_CONEXION(adapterProvider)
   //CRONO(adapterProvider)
   ACTUALIZAR()
 
-  const { httpServer } = await createBot({
-    flow: adapterFlow,
-    provider: adapterProvider,
-    database: adapterDB
-  })
+  const { httpServer } = await createBot(
+    {
+      flow: adapterFlow,
+      provider: adapterProvider,
+      database: adapterDB
+    },
+    {
+      //control de frecuncia
+      queue: {
+        timeout: 20000,
+        concurrencyLimit: 50
+      }
+    }
+  )
 
   httpServer(+PORT)
 }

@@ -3,8 +3,8 @@ import { addKeyword, EVENTS } from '@builderbot/bot'
 // TT MODULOS
 import { ObtenerDatos, AgendarCita, CancelarCita } from '../APIs/APIGoogleApp.mjs'
 import { CitasLibre, ObjAgendar, CitasActuales, ObjCancelar } from '../funciones/formatearIA.mjs'
-import { reset } from './idle.mjs'
-import { EnviarGemini } from '../APIs/APIgeminiIA.mjs'
+import { reset, stop } from './idle.mjs'
+import { EnviarGemini, LimpiarHistorial } from '../APIs/APIgeminiIA.mjs'
 import { MENSAJES } from '../sistema/textos.mjs'
 
 const time = 240
@@ -27,6 +27,12 @@ export const fluIAEntrada = addKeyword(EVENTS.ACTION).addAction(
       else if (respuesta.includes('#CITA-ACTUAL#')) {
         return gotoFlow(fluCitasActuales)
       }
+      //ss Adios
+      else if (respuesta.includes('#ADIOS#')) {
+        LimpiarHistorial(ctx.from)
+        stop(ctx)
+        return endFlow(MENSAJES.ADIOS)
+      }
       //ss conversacion IA
       else {
         return fallBack(respuesta)
@@ -34,6 +40,7 @@ export const fluIAEntrada = addKeyword(EVENTS.ACTION).addAction(
     }
   }
 )
+
 //TT FLUJO CONSULTA AGENDA DISPONIBLE
 export const fluConsultarDisponibles = addKeyword(EVENTS.ACTION)
   .addAction(async (ctx, { flowDynamic, endFlow, gotoFlow, fallBack, provider, state }) => {
@@ -42,7 +49,6 @@ export const fluConsultarDisponibles = addKeyword(EVENTS.ACTION)
     const agenda = await ObtenerDatos(process.env.PAG_ACTUA)
     //ss si la agenda carga
     if (agenda !== null) {
-      console.log(agenda)
       const _libre = CitasLibre(agenda)
       //ss si hay espacios disponibles
       if (_libre !== null) {
@@ -82,6 +88,12 @@ export const fluConsultarDisponibles = addKeyword(EVENTS.ACTION)
         if (respuesta.includes('#AGENDA#')) {
           respuesta = respuesta.replace('#AGENDA#', state.get('agendaTxt'))
         }
+        //ss Adios
+        else if (respuesta.includes('#ADIOS#')) {
+          LimpiarHistorial(ctx.from)
+          stop(ctx)
+          return endFlow(MENSAJES.ADIOS)
+        }
         //ss agendar cita
         else if (_cita !== null) {
           _cita.TELEFONO = ctx.from
@@ -110,7 +122,6 @@ export const fluCitasActuales = addKeyword(EVENTS.ACTION)
     flowDynamic('⏱️ Consultando Agenda...')
     const agenda = await ObtenerDatos(process.env.PAG_ACTUA)
     if (agenda !== null) {
-      console.log(agenda)
       const _actuales = CitasActuales(agenda, ctx.from)
       //ss si existen citas
       if (_actuales !== null) {
@@ -146,11 +157,17 @@ export const fluCitasActuales = addKeyword(EVENTS.ACTION)
       }
       //ss Ia responde
       else {
-        const _cita = ObjCancelar(respuesta)
         console.log(respuesta)
+        const _cita = ObjCancelar(respuesta)
         //ss remplazar agenda
         if (respuesta.includes('#AGENDA#')) {
           respuesta = respuesta.replace('#AGENDA#', state.get('citasActuales'))
+        }
+        //ss Adios
+        else if (respuesta.includes('#ADIOS#')) {
+          LimpiarHistorial(ctx.from)
+          stop(ctx)
+          return endFlow(MENSAJES.ADIOS)
         }
         //ss agendar cita
         else if (_cita !== null) {
