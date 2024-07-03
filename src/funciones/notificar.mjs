@@ -11,7 +11,7 @@ const intMensajes = 10
 
 //TT EVENTO CRONO
 export async function CRONO(proveedor) {
-  cron.schedule('50 * * * *', async () => {
+  cron.schedule('* * * * *', async () => {
     //SS Si esta conectado
     if (proveedor.store?.state?.connection === 'open') {
       const agenda = await ObtenerDatos()

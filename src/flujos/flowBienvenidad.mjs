@@ -1,6 +1,7 @@
 import { addKeyword, EVENTS } from '@builderbot/bot'
 // TT MODULOS
 import { start } from './idle.mjs'
+import { fluIAEntrada } from './flowIA.mjs'
 import { Esperar } from '../funciones/tiempo.mjs'
 import { MENSAJES } from '../sistema/textos.mjs'
 
@@ -14,5 +15,6 @@ export const flowBienvenidad = addKeyword(EVENTS.WELCOME).addAction(
     start(ctx, gotoFlow, idleTime)
     await Esperar(1)
     await flowDynamic(MENSAJES.SALUDO)
+    return gotoFlow(fluIAEntrada)
   }
 )

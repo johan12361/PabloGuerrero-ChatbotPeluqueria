@@ -1,29 +1,60 @@
 import 'dotenv/config'
 
 //TT URL API
-const urlSheet = process.env.GOOGLE_APP_URL + '?'
+const urlApp = process.env.GOOGLE_APP_URL + '?'
 
 //TT PETICIONES
 const DATOS = {
-  functionName: 'ObtenerAgenda',
+  functionName: 'ObtenerDatos',
   urlSheet: process.env.SHEET_URL
 }
 
 //TT Realizar la petición GET
 export async function ObtenerDatos(pag = process.env.PAG_ACTUA) {
   try {
-    DATOS.pagina = pag
-    const queryString = Object.keys(DATOS)
-      .map((key) => key + '=' + encodeURIComponent(DATOS[key]))
+    const data = JSON.parse(JSON.stringify(DATOS))
+    data.pagina = pag
+    const queryString = Object.keys(data)
+      .map((key) => key + '=' + encodeURIComponent(data[key]))
       .join('&')
-    const response = await fetch(urlSheet + queryString)
-    const data = await response.json()
-    console.log(data)
-    return data
+    const response = await fetch(urlApp + queryString)
+    const res = await response.json()
+    console.info(`Datos cargados: ${pag}`)
+    return res
   } catch (error) {
     console.error('Error:', error)
     return null
   }
 }
 //FF Pruebas
-//await ObtenerDatos(process.env.PAG_MSJ)
+//await ObtenerDatos(process.env.PAG_ACTUA)
+
+//TT AGENDAR CITA
+export async function AgendarCita(obj) {
+  try {
+    const data = JSON.parse(JSON.stringify(DATOS))
+    data.functionName = 'AgendarCita'
+    data.pagina = process.env.PAG_ACTUA
+    //objeto
+    data.fecha = obj.FECHA
+    data.hora = obj.HORA
+    data.nombre = obj.NOMBRE
+    data.telefono = obj.TELEFONO
+    const queryString = Object.keys(data)
+      .map((key) => key + '=' + encodeURIComponent(data[key]))
+      .join('&')
+    const response = await fetch(urlApp + queryString)
+    const res = await response.text()
+
+    if (res === 'OK') {
+      console.info(`llama de agendar cita correta: ${res}`)
+      return true
+    } else {
+      console.error(`llama de agendar cita error: ${res}`)
+      return false
+    }
+  } catch (error) {
+    console.error('Error:', error)
+    return false
+  }
+}

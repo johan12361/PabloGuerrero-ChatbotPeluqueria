@@ -73,3 +73,25 @@ function convertirStringADate(fechaString) {
 function isValidDate(date) {
   return date instanceof Date && !isNaN(date)
 }
+
+export function FormatoValido(dateString) {
+  // Expresión regular para validar el formato DD/MM/AAAA o D/M/AAAA
+  const regex = /^(0[1-9]|[1-2][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/
+
+  // Si el string no coincide con el formato, retorna false
+  if (!regex.test(dateString)) {
+    return false
+  }
+
+  // Divide el string en partes (día, mes, año)
+  const parts = dateString.split('/')
+  const day = parseInt(parts[0], 10)
+  const month = parseInt(parts[1], 10)
+  const year = parseInt(parts[2], 10)
+
+  // Crea una nueva fecha con los valores obtenidos
+  const date = new Date(year, month - 1, day)
+
+  // Comprueba si la fecha es válida
+  return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day
+}

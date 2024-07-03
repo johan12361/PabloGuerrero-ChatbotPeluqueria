@@ -2,11 +2,13 @@ import { createBot, createProvider, createFlow, MemoryDB } from '@builderbot/bot
 import { BaileysProvider } from '@builderbot/provider-baileys'
 // TT MODULOS
 import { ESTADO_CONEXION } from './src/sistema/estado_Conexion.mjs'
-import { CRONO } from './src/funciones/notificar.mjs'
+//import { CRONO } from './src/funciones/notificar.mjs'
 import { ACTUALIZAR } from './src/sistema/textos.mjs'
+import { idleFlow } from './src/flujos/idle.mjs'
 import { flowBienvenidad } from './src/flujos/flowBienvenidad.mjs'
+import { fluIAEntrada, fluConsultarDisponibles } from './src/flujos/flowIA.mjs'
 
-const FLUJOS_ENTRADA = [flowBienvenidad]
+const FLUJOS_ENTRADA = [flowBienvenidad, idleFlow, fluIAEntrada, fluConsultarDisponibles]
 
 const PORT = process.env.PORT ?? 3000
 
@@ -18,7 +20,7 @@ const main = async () => {
 
   //SS DEBUGS
   ESTADO_CONEXION(adapterProvider)
-  CRONO(adapterProvider)
+  //CRONO(adapterProvider)
   ACTUALIZAR()
 
   const { httpServer } = await createBot({
