@@ -5,7 +5,8 @@ import { ObtenerDatos } from '../APIs/APIGoogleApp.mjs'
 export const MENSAJES = {
   SALUDO: '',
   ADIOS: '',
-  RECORDATORIO: ''
+  RECORDATORIO: '',
+  SIN_CITAS_DISP: ''
 }
 //TT INFO
 export const INFO = {
@@ -20,5 +21,7 @@ export async function ACTUALIZAR() {
     MENSAJES.SALUDO = msj[0].SALUDO
     MENSAJES.ADIOS = msj[0].ADIOS
     MENSAJES.RECORDATORIO = msj[0].RECORDATORIO
+    MENSAJES.SIN_CITAS_DISP = msj[0].CITAS_NO_DISPONIBLES
   }
+  console.log(MENSAJES)
 }

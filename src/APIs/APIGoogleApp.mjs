@@ -58,3 +58,32 @@ export async function AgendarCita(obj) {
     return false
   }
 }
+
+//TT CANCELAR CITA
+export async function CancelarCita(obj) {
+  try {
+    const data = JSON.parse(JSON.stringify(DATOS))
+    data.functionName = 'CancelarCita'
+    data.pagina = process.env.PAG_ACTUA
+    //objeto
+    data.fecha = obj.FECHA
+    data.hora = obj.HORA
+    console.log('envia', data)
+    const queryString = Object.keys(data)
+      .map((key) => key + '=' + encodeURIComponent(data[key]))
+      .join('&')
+    const response = await fetch(urlApp + queryString)
+    const res = await response.text()
+
+    if (res === 'OK') {
+      console.info(`llamada de cancelar cita correta: ${res}`)
+      return true
+    } else {
+      console.error(`llama de cancelar cita error: ${res}`)
+      return false
+    }
+  } catch (error) {
+    console.error('Error:', error)
+    return false
+  }
+}

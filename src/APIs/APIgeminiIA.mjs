@@ -10,7 +10,8 @@ const genAI = new GoogleGenerativeAI(apiKey)
 //TT Ruta de guion
 const GUIONES = {
   WELCOME: fs.readFileSync('./src/guiones/bienvenida.txt', 'utf8'),
-  AGENDAR: fs.readFileSync('./src/guiones/agendarCita.txt', 'utf8')
+  AGENDAR: fs.readFileSync('./src/guiones/agendarCita.txt', 'utf8'),
+  MODIFICAR: fs.readFileSync('./src/guiones/modificarCita.txt', 'utf8')
 }
 //TT Guiones
 function GernerarConfig(guion) {
@@ -22,6 +23,12 @@ function GernerarConfig(guion) {
     })
   } else if (guion.estado === 'AGENDAR') {
     const _txt = GUIONES.AGENDAR.replace('#AGENDA#', guion.agenda)
+    config = genAI.getGenerativeModel({
+      model: 'gemini-1.5-flash',
+      systemInstruction: _txt
+    })
+  } else if (guion.estado === 'MODIFICAR') {
+    const _txt = GUIONES.MODIFICAR.replace('#AGENDA#', guion.agenda)
     config = genAI.getGenerativeModel({
       model: 'gemini-1.5-flash',
       systemInstruction: _txt
@@ -41,6 +48,7 @@ const generationConfig = {
 // TT sesiones
 const HistBienv = {}
 const HistAgendar = {}
+const HistModificar = {}
 // SS obtener id
 function getSession(userId, guion) {
   if (guion.estado === 'WELCOME') {
@@ -53,6 +61,12 @@ function getSession(userId, guion) {
       HistAgendar[userId] = []
     }
     return HistAgendar[userId]
+  }
+  else if (guion.estado === 'MODIFICAR') {
+    if (!HistModificar[userId]) {
+      HistModificar[userId] = []
+    }
+    return HistModificar[userId]
   }
 }
 

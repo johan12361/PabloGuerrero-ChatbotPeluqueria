@@ -1,10 +1,11 @@
 import { FormatoValido } from '../funciones/tiempo.mjs'
 
-//TT LISATCRUDA DE DISPONIBLES
+//TT FILTRAR LISTA DE CITAS DISPONIBLES
 export function CitasLibre(agenda) {
-  let txt = '*_lISTA DE CITAS DISPONIBLES_*'
+  let txt = ''
   let cabeza = 'FECHA'
   let total = ''
+  let cont = 0
 
   for (let i = 0; i < agenda.length; i++) {
     if (agenda[i].FECHA !== cabeza) {
@@ -14,10 +15,30 @@ export function CitasLibre(agenda) {
     if (agenda[i].ESTADO === 'disponible') {
       txt = `${txt}\n ✅ *${agenda[i].HORA}*  ${agenda[i].ESTADO}`
       total = `${total}\n Fecha: ${agenda[i].FECHA} Hora: ${agenda[i].HORA} Estado: ${agenda[i].ESTADO}`
+      cont++
     }
   }
-  console.log(total)
+  if (cont === 0) {
+    return null
+  }
+  console.log('Citas disponibles: ', total)
   return [txt, total]
+}
+//TT FILTAR CITAS ACTUALES
+export function CitasActuales(agenda, num) {
+  let citas = ''
+  let cont = 0
+  for (let i = 0; i < agenda.length; i++) {
+    if (agenda[i].TELEFONO.includes(num)) {
+      citas = `${citas}cita el Dia: ${agenda[i].FECHA} Hora: ${agenda[i].HORA}\n`
+      cont++
+    }
+  }
+  if (cont === 0) {
+    return null
+  }
+  console.log(`citas actuales de: ${num}`, citas)
+  return citas
 }
 
 //TT LIMPIAR AGENDA
@@ -44,24 +65,41 @@ export function BorrarSaltos(str) {
 export function ObjAgendar(str) {
   // Expresión regular para extraer las partes del string
   const regex = /^(\d{1,2}\/\d{1,2}\/\d{4})-(\d{1,2}:\d{1,2})-(.+)$/
-
   // Verificar si el string coincide con el formato
   const match = str.match(regex)
   if (!match) {
     return null
   }
-
   // Extraer las partes del string
   const fecha = match[1]
   const hora = match[2]
   const nombre = match[3]
-
   // Construir el objeto
   const objeto = {
     FECHA: fecha,
     HORA: hora,
     NOMBRE: nombre
   }
+  return objeto
+}
 
+//TT VALIDAR OBJETO PARA CANCELAR AGANEDA
+export function ObjCancelar(str) {
+  // Expresión regular para extraer las partes del string
+  const regex = /(\d{1,2}\/\d{1,2}\/\d{4})-(\d{1,2}:\d{1,2})/
+  // Verificar si el string coincide con el formato
+  const match = str.match(regex)
+  if (!match) {
+    return null
+  }
+  // Extraer las partes del string
+  const fecha = match[1]
+  const hora = match[2]
+  // Construir el objeto
+  const objeto = {
+    FECHA: fecha,
+    HORA: hora
+  }
+  console.log('OK', objeto)
   return objeto
 }

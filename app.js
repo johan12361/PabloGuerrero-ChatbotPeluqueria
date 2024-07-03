@@ -6,9 +6,9 @@ import { ESTADO_CONEXION } from './src/sistema/estado_Conexion.mjs'
 import { ACTUALIZAR } from './src/sistema/textos.mjs'
 import { idleFlow } from './src/flujos/idle.mjs'
 import { flowBienvenidad } from './src/flujos/flowBienvenidad.mjs'
-import { fluIAEntrada, fluConsultarDisponibles } from './src/flujos/flowIA.mjs'
+import { fluIAEntrada, fluConsultarDisponibles, fluCitasActuales } from './src/flujos/flowIA.mjs'
 
-const FLUJOS_ENTRADA = [flowBienvenidad, idleFlow, fluIAEntrada, fluConsultarDisponibles]
+const FLUJOS_ENTRADA = [flowBienvenidad, idleFlow, fluIAEntrada, fluConsultarDisponibles, fluCitasActuales]
 
 const PORT = process.env.PORT ?? 3000
 
