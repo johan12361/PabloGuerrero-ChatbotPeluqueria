@@ -17,5 +17,5 @@ export function ESTADO_CONEXION(data) {
       ACTUALIZAR()
       escuchar = false
     }
-  }, 10 * 1000)
+  }, 60 * 1000)
 }
