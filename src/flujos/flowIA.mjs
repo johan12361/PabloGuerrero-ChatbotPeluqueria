@@ -22,10 +22,12 @@ export const fluIAEntrada = addKeyword(EVENTS.ACTION).addAction(
     } else {
       //ss consultar agenda disponible
       if (respuesta.includes('#CITA-DISPONIBLE#')) {
+        reset(ctx, gotoFlow, time) //FF IDLE RESET
         return gotoFlow(fluConsultarDisponibles)
       }
       //ss consultar citas actuales
       else if (respuesta.includes('#CITA-ACTUAL#')) {
+        reset(ctx, gotoFlow, time) //FF IDLE RESET
         return gotoFlow(fluCitasActuales)
       }
       //ss Adios
@@ -36,6 +38,7 @@ export const fluIAEntrada = addKeyword(EVENTS.ACTION).addAction(
       }
       //ss conversacion IA
       else {
+        reset(ctx, gotoFlow, time) //FF IDLE RESET
         return fallBack(respuesta)
       }
     }
@@ -62,6 +65,7 @@ export const fluConsultarDisponibles = addKeyword(EVENTS.ACTION)
       else {
         await flowDynamic(MENSAJES.SIN_CITAS_DISP)
         await flowDynamic(mensajeAyuda)
+        reset(ctx, gotoFlow, time) //FF IDLE RESET
         return gotoFlow(fluIAEntrada)
       }
     }
@@ -69,6 +73,7 @@ export const fluConsultarDisponibles = addKeyword(EVENTS.ACTION)
     else {
       await flowDynamic('Servicio no disponible, intenta más tarde')
       await flowDynamic(mensajeAyuda)
+      reset(ctx, gotoFlow, time) //FF IDLE RESET
       return gotoFlow(fluIAEntrada)
     }
   })
@@ -86,6 +91,7 @@ export const fluConsultarDisponibles = addKeyword(EVENTS.ACTION)
       if (respuesta === null) {
         await flowDynamic('Servicio no disponible, intenta más tarde')
         await flowDynamic(mensajeAyuda)
+        reset(ctx, gotoFlow, time) //FF IDLE RESET
         return gotoFlow(fluIAEntrada)
       }
       //ss Ia responde
@@ -98,6 +104,7 @@ export const fluConsultarDisponibles = addKeyword(EVENTS.ACTION)
         }
         //ss ver citas actuales
         else if (respuesta.includes('#CITA-ACTUAL#')) {
+          reset(ctx, gotoFlow, time) //FF IDLE RESET
           return gotoFlow(fluCitasActuales)
         }
         //ss Adios
@@ -114,7 +121,9 @@ export const fluConsultarDisponibles = addKeyword(EVENTS.ACTION)
           //ss si se logra agendar
           if (_res) {
             await flowDynamic('✅ Cita agendada con éxito')
-            return endFlow(MENSAJES.ADIOS)
+            reset(ctx, gotoFlow, time) //FF IDLE RESET
+            await flowDynamic(mensajeAyuda)
+            return gotoFlow(fluIAEntrada)
           }
           //ss error al agendar
           else {
@@ -124,6 +133,7 @@ export const fluConsultarDisponibles = addKeyword(EVENTS.ACTION)
           }
         }
         //ss conversacion IA
+        reset(ctx, gotoFlow, time) //FF IDLE RESET
         return fallBack(respuesta)
       }
     }
@@ -148,6 +158,7 @@ export const fluCitasActuales = addKeyword(EVENTS.ACTION)
       else {
         await flowDynamic('🗓️ No cuentas con citas en este momento')
         await flowDynamic(mensajeAyuda)
+        reset(ctx, gotoFlow, time) //FF IDLE RESET
         return gotoFlow(fluIAEntrada)
       }
     }
@@ -155,6 +166,7 @@ export const fluCitasActuales = addKeyword(EVENTS.ACTION)
     else {
       await flowDynamic('Servicio no disponible, intenta más tarde')
       await flowDynamic(mensajeAyuda)
+      reset(ctx, gotoFlow, time) //FF IDLE RESET
       return gotoFlow(fluIAEntrada)
     }
   })
@@ -172,6 +184,7 @@ export const fluCitasActuales = addKeyword(EVENTS.ACTION)
       if (respuesta === null) {
         await flowDynamic('Servicio no disponible, intenta más tarde')
         await flowDynamic(mensajeAyuda)
+        reset(ctx, gotoFlow, time) //FF IDLE RESET
         return gotoFlow(fluIAEntrada)
       }
       //ss Ia responde
@@ -184,6 +197,7 @@ export const fluCitasActuales = addKeyword(EVENTS.ACTION)
         }
         //ss ver citas actuales
         else if (respuesta.includes('#CITA-DISPONIBLE#')) {
+          reset(ctx, gotoFlow, time) //FF IDLE RESET
           return gotoFlow(fluConsultarDisponibles)
         }
         //ss Adios
@@ -199,16 +213,20 @@ export const fluCitasActuales = addKeyword(EVENTS.ACTION)
           //ss si se logra agendar
           if (_res) {
             await flowDynamic('✅ Cita cancelada con éxito')
-            return endFlow(MENSAJES.ADIOS)
+            await flowDynamic(mensajeAyuda)
+            reset(ctx, gotoFlow, time) //FF IDLE RESET
+            return gotoFlow(fluIAEntrada)
           }
           //ss error al agendar
           else {
             await flowDynamic('⚠️ Error al cancelar cita')
             await flowDynamic(mensajeAyuda)
+            reset(ctx, gotoFlow, time) //FF IDLE RESET
             return gotoFlow(fluIAEntrada)
           }
         }
         //ss conversacion IA
+        reset(ctx, gotoFlow, time) //FF IDLE RESET
         return fallBack(respuesta)
       }
     }
