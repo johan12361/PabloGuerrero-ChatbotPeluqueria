@@ -8,6 +8,7 @@ const apiKey = process.env.GEMINI_API_KEY
 const genAI = new GoogleGenerativeAI(apiKey)
 
 // TT sesiones
+const HistorialConv = {}
 const HistBienv = {}
 const HistAgendar = {}
 const HistModificar = {}
@@ -52,6 +53,11 @@ const generationConfig = {
 }
 // SS obtener id
 function getSession(userId, guion) {
+  if (!HistorialConv[userId]) {
+    HistorialConv[userId] = []
+  }
+  return HistorialConv[userId]
+  /*
   if (guion.estado === 'WELCOME') {
     if (!HistBienv[userId]) {
       HistBienv[userId] = []
@@ -68,6 +74,7 @@ function getSession(userId, guion) {
     }
     return HistModificar[userId]
   }
+    */
 }
 
 // TT ENVIAR MESAJE
@@ -102,5 +109,8 @@ export function LimpiarHistorial(userId) {
   }
   if (HistModificar[userId]) {
     HistModificar[userId] = null
+  }
+  if (HistorialConv[userId]) {
+    HistorialConv[userId] = null
   }
 }
