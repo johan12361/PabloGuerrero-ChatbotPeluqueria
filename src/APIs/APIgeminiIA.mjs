@@ -3,6 +3,7 @@ import fs from 'fs'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 //TT MODULOS
 import { BorrarSaltos } from '../funciones/formatearIA.mjs'
+import { MENSAJES } from '../sistema/textos.mjs'
 //TT Credenciales
 const apiKey = process.env.GEMINI_API_KEY
 const genAI = new GoogleGenerativeAI(apiKey)
@@ -25,7 +26,7 @@ function GernerarConfig(guion) {
   if (guion.estado === 'WELCOME') {
     config = genAI.getGenerativeModel({
       model: 'gemini-1.5-flash',
-      systemInstruction: GUIONES.WELCOME
+      systemInstruction: GUIONES.WELCOME.replace('#SALUDO#', MENSAJES.SALUDO)
     })
   } else if (guion.estado === 'AGENDAR') {
     const _txt = GUIONES.AGENDAR.replace('#AGENDA#', guion.agenda)

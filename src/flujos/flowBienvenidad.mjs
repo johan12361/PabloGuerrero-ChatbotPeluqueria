@@ -1,9 +1,9 @@
 import { addKeyword, EVENTS } from '@builderbot/bot'
 // TT MODULOS
 import { start } from './idle.mjs'
-import { fluIAEntrada } from './flowIA.mjs'
+import { fluIASaludo } from './flowIA.mjs'
 import { Esperar } from '../funciones/tiempo.mjs'
-import { MENSAJES } from '../sistema/textos.mjs'
+//import { MENSAJES } from '../sistema/textos.mjs'
 
 // TT VARIABLES
 const idleTime = 180
@@ -14,7 +14,6 @@ export const flowBienvenidad = addKeyword(EVENTS.WELCOME).addAction(
     // ff Star IDLE
     start(ctx, gotoFlow, idleTime)
     await Esperar(1)
-    await flowDynamic(MENSAJES.SALUDO)
-    return gotoFlow(fluIAEntrada)
+    return gotoFlow(fluIASaludo)
   }
 )
