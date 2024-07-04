@@ -7,7 +7,8 @@ import { reset, stop } from './idle.mjs'
 import { EnviarGemini, LimpiarHistorial } from '../APIs/APIgeminiIA.mjs'
 import { MENSAJES } from '../sistema/textos.mjs'
 
-const time = 240
+const mensajeAyuda = '¿Necesitas algo más? Dime en qué más puedo ayudarte. 💡✨'
+const time = 300
 
 //TT FLUJO ENTRADA
 export const fluIAEntrada = addKeyword(EVENTS.ACTION).addAction(
@@ -55,15 +56,20 @@ export const fluConsultarDisponibles = addKeyword(EVENTS.ACTION)
         _libre[0] = `*_lISTA DE CITAS DISPONIBLES_*${_libre[0]}`
         await state.update({ agendaDisp: _libre[1], agendaTxt: _libre[0] })
         await flowDynamic(_libre[0])
+        await flowDynamic('Dime en que fecha y hora deseas agendar')
       }
       //ss si no hay espacios disponibles
       else {
-        return endFlow(MENSAJES.SIN_CITAS_DISP)
+        await flowDynamic(MENSAJES.SIN_CITAS_DISP)
+        await flowDynamic(mensajeAyuda)
+        return gotoFlow(fluIAEntrada)
       }
     }
     //ss error al cargar la agenda
     else {
-      return endFlow('Servicio no disponible, intenta más tarde')
+      await flowDynamic('Servicio no disponible, intenta más tarde')
+      await flowDynamic(mensajeAyuda)
+      return gotoFlow(fluIAEntrada)
     }
   })
   .addAction(
@@ -78,7 +84,9 @@ export const fluConsultarDisponibles = addKeyword(EVENTS.ACTION)
       let respuesta = await EnviarGemini(ctx.body, ctx.from, contexto)
       //ss error contactando IA
       if (respuesta === null) {
-        return endFlow('Servicio no disponible, intenta mas tarde')
+        await flowDynamic('Servicio no disponible, intenta más tarde')
+        await flowDynamic(mensajeAyuda)
+        return gotoFlow(fluIAEntrada)
       }
       //ss Ia responde
       else {
@@ -106,7 +114,9 @@ export const fluConsultarDisponibles = addKeyword(EVENTS.ACTION)
           }
           //ss error al agendar
           else {
-            return endFlow('⚠️ Error al agendar cita')
+            await flowDynamic('⚠️ Error al agendar cita')
+            await flowDynamic(mensajeAyuda)
+            return gotoFlow(fluIAEntrada)
           }
         }
         //ss conversacion IA
@@ -128,17 +138,20 @@ export const fluCitasActuales = addKeyword(EVENTS.ACTION)
         await state.update({ citasActuales: _actuales })
         const _msj = `🗓️ *Actualmente, tienes la siguiente cita:* \n\n${_actuales}`
         await flowDynamic(_msj)
-        await flowDynamic('¿Te gustaría cancelar o modificar una cita existente?')
+        await flowDynamic('¿Te gustaría cancelar una cita existente?')
       }
       //ss no cuenta con citas
       else {
         await flowDynamic('🗓️ No cuentas con citas en este momento')
+        await flowDynamic(mensajeAyuda)
         return gotoFlow(fluIAEntrada)
       }
     }
     //ss no se puede cargar la agenda
     else {
-      return endFlow('Servicio no disponible, intenta más tarde')
+      await flowDynamic('Servicio no disponible, intenta más tarde')
+      await flowDynamic(mensajeAyuda)
+      return gotoFlow(fluIAEntrada)
     }
   })
   .addAction(
@@ -153,7 +166,9 @@ export const fluCitasActuales = addKeyword(EVENTS.ACTION)
       let respuesta = await EnviarGemini(ctx.body, ctx.from, contexto)
       //ss error contactando IA
       if (respuesta === null) {
-        return endFlow('Servicio no disponible, intenta mas tarde')
+        await flowDynamic('Servicio no disponible, intenta más tarde')
+        await flowDynamic(mensajeAyuda)
+        return gotoFlow(fluIAEntrada)
       }
       //ss Ia responde
       else {
@@ -180,7 +195,9 @@ export const fluCitasActuales = addKeyword(EVENTS.ACTION)
           }
           //ss error al agendar
           else {
-            return endFlow('⚠️ Error al cancelar cita')
+            await flowDynamic('⚠️ Error al cancelar cita')
+            await flowDynamic(mensajeAyuda)
+            return gotoFlow(fluIAEntrada)
           }
         }
         //ss conversacion IA
