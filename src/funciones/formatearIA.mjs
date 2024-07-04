@@ -1,5 +1,28 @@
 import { FormatoValido } from '../funciones/tiempo.mjs'
 
+//TT FORMATAER DATOS DE AGENDA
+export function FormatearAgenda(agenda) {
+  for (let i = 0; i < agenda.length; i++) {
+    if (agenda[i].FECHA !== '') {
+      // Dividir la fecha en partes (DD/MM/AAAA)
+      const partes = agenda[i].FECHA.split('/')
+      const dia = parseInt(partes[0], 10)
+      const mes = parseInt(partes[1], 10)
+      const anio = parseInt(partes[2], 10)
+      agenda[i].FECHA = dia + '/' + mes + '/' + anio
+    }
+    if (agenda[i].HORA !== '') {
+      // Dividir la fecha en partes (DD/MM/AAAA)
+      const partesHora = agenda[i].HORA.split(':')
+      let hora = partesHora[0]
+      const minutos = partesHora[1]
+      hora = hora.padStart(2, '0')
+      agenda[i].HORA = hora + ':' + minutos
+    }
+  }
+  return agenda
+}
+
 //TT FILTRAR LISTA DE CITAS DISPONIBLES
 export function CitasLibre(agenda) {
   let txt = ''

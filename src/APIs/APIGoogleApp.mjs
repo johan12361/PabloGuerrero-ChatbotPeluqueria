@@ -1,4 +1,5 @@
 import 'dotenv/config'
+import { FormatearAgenda } from '../funciones/formatearIA.mjs'
 
 //TT URL API
 const urlApp = process.env.GOOGLE_APP_URL + '?'
@@ -18,8 +19,12 @@ export async function ObtenerDatos(pag = process.env.PAG_ACTUA) {
       .map((key) => key + '=' + encodeURIComponent(data[key]))
       .join('&')
     const response = await fetch(urlApp + queryString)
-    const res = await response.json()
+    let res = await response.json()
     console.info(`Datos cargados: ${pag}`)
+    //ss si es agenda formatear valores
+    if (pag === process.env.PAG_ACTUA) {
+      res = FormatearAgenda(res)
+    }
     return res
   } catch (error) {
     console.error('Error:', error)
