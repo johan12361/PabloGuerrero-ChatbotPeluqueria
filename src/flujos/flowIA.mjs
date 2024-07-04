@@ -96,6 +96,10 @@ export const fluConsultarDisponibles = addKeyword(EVENTS.ACTION)
         if (respuesta.includes('#AGENDA#')) {
           respuesta = respuesta.replace('#AGENDA#', state.get('agendaTxt'))
         }
+        //ss ver citas actuales
+        else if (respuesta.includes('#CITA-ACTUAL#')) {
+          return gotoFlow(fluCitasActuales)
+        }
         //ss Adios
         else if (respuesta.includes('#ADIOS#')) {
           LimpiarHistorial(ctx.from)
@@ -177,6 +181,10 @@ export const fluCitasActuales = addKeyword(EVENTS.ACTION)
         //ss remplazar agenda
         if (respuesta.includes('#AGENDA#')) {
           respuesta = respuesta.replace('#AGENDA#', state.get('citasActuales'))
+        }
+        //ss ver citas actuales
+        else if (respuesta.includes('#CITA-DISPONIBLE#')) {
+          return gotoFlow(fluConsultarDisponibles)
         }
         //ss Adios
         else if (respuesta.includes('#ADIOS#')) {
