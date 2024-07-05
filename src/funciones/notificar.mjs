@@ -2,7 +2,7 @@ import cron from 'node-cron'
 import 'dotenv/config'
 //TT MODULOS
 import { ObtenerDatos } from '../APIs/APIGoogleApp.mjs'
-import { ObtenerFechaActual, ObtenerHoraActual, CompararFechas, Esperar } from '../funciones/tiempo.mjs'
+import { ObtenerFechaActual, CompararFechas, Esperar } from '../funciones/tiempo.mjs'
 
 //TT VARIABLES
 let AGENDA = []
@@ -32,9 +32,7 @@ export async function CRONO(proveedor) {
 //TT ENVIAR MENSAJES
 async function EnviarMensajes(proveedor) {
   const fecha = ObtenerFechaActual()
-  const hora = ObtenerHoraActual()
   console.info(fecha)
-  console.info(hora)
   //SS Si la fecha es la actual
   for (let i = 0; i < AGENDA.length; i++) {
     if (CompararFechas(fecha, AGENDA[i].FECHA)) {

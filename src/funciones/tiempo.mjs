@@ -9,9 +9,12 @@ export function ObtenerFechaActual() {
   const fecha = new Date()
 
   // Obteniendo día, mes y año
-  const dia = fecha.getDate().toString().padStart(2, '0') // Dos dígitos con cero a la izquierda si es necesario
-  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0') // Meses van de 0 a 11, sumamos 1 para obtener el mes actual
+  let dia = fecha.getDate().toString().padStart(2, '0') // Dos dígitos con cero a la izquierda si es necesario
+  let mes = (fecha.getMonth() + 1).toString().padStart(2, '0') // Meses van de 0 a 11, sumamos 1 para obtener el mes actual
   const año = fecha.getFullYear()
+
+  dia = parseInt(dia, 10)
+  mes = parseInt(mes, 10)
 
   // Construyendo la fecha en formato DD/MM/AAAA
   const fechaFormateada = `${dia}/${mes}/${año}`
