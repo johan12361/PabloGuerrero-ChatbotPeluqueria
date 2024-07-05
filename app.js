@@ -1,6 +1,7 @@
 import { createBot, createProvider, createFlow, MemoryDB } from '@builderbot/bot'
 import { BaileysProvider } from '@builderbot/provider-baileys'
 // TT MODULOS
+import { PROVEEDOR, ENUNPROV } from './src/sistema/proveedor.mjs'
 import { ESTADO_CONEXION } from './src/sistema/estado_Conexion.mjs'
 //import { CRONO } from './src/funciones/notificar.mjs'
 import { ACTUALIZAR } from './src/sistema/textos.mjs'
@@ -30,6 +31,10 @@ const main = async () => {
   ESTADO_CONEXION(adapterProvider)
   //CRONO(adapterProvider)
   ACTUALIZAR()
+
+  //SS PROVEEDOR
+  PROVEEDOR.name = ENUNPROV.BAILEYS
+  PROVEEDOR.prov = adapterProvider
 
   const { httpServer } = await createBot(
     {

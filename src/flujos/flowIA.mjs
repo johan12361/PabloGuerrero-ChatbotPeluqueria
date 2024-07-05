@@ -5,16 +5,15 @@ import { ObtenerDatos, AgendarCita, CancelarCita } from '../APIs/APIGoogleApp.mj
 import { CitasLibre, ObjAgendar, CitasActuales, ObjCancelar } from '../funciones/formatearIA.mjs'
 import { reset, stop } from './idle.mjs'
 import { EnviarGemini, LimpiarHistorial } from '../APIs/APIgeminiIA.mjs'
-import { MENSAJES } from '../sistema/textos.mjs'
+import { MENSAJES, INFO } from '../sistema/textos.mjs'
+import { EnviarMensaje } from '../sistema/proveedor.mjs'
 
-const mensajeAyuda = '¿Necesitas algo más? Dime en qué más puedo ayudarte. 💡✨'
 const time = 300
 
 //TT FLUJO SALUDO
 export const fluIASaludo = addKeyword(EVENTS.ACTION).addAction(
   async (ctx, { flowDynamic, gotoFlow, endFlow, provider }) => {
     reset(ctx, gotoFlow, time) //FF IDLE RESET
-    provider.vendor.sendPresenceUpdate('composing', ctx.key.remoteJid)
     const respuesta = await EnviarGemini(ctx.body, ctx.from, { estado: 'WELCOME' })
     if (respuesta === null) {
       return endFlow('Servicio no disponible, intenta mas tarde')
@@ -50,11 +49,11 @@ export const fluIAEntrada = addKeyword(EVENTS.ACTION).addAction(
   { capture: true },
   async (ctx, { fallBack, flowDynamic, gotoFlow, endFlow, provider }) => {
     reset(ctx, gotoFlow, time) //FF IDLE RESET
-    provider.vendor.sendPresenceUpdate('composing', ctx.key.remoteJid)
     const respuesta = await EnviarGemini(ctx.body, ctx.from, { estado: 'WELCOME' })
     if (respuesta === null) {
       return endFlow('Servicio no disponible, intenta mas tarde')
     } else {
+      console.log(respuesta)
       //ss consultar agenda disponible
       if (respuesta.includes('#CITA-DISPONIBLE#')) {
         reset(ctx, gotoFlow, time) //FF IDLE RESET
@@ -99,7 +98,7 @@ export const fluConsultarDisponibles = addKeyword(EVENTS.ACTION)
       //ss si no hay espacios disponibles
       else {
         await flowDynamic(MENSAJES.SIN_CITAS_DISP)
-        await flowDynamic(mensajeAyuda)
+        await flowDynamic(MENSAJES.AYUDA)
         reset(ctx, gotoFlow, time) //FF IDLE RESET
         return gotoFlow(fluIAEntrada)
       }
@@ -107,7 +106,7 @@ export const fluConsultarDisponibles = addKeyword(EVENTS.ACTION)
     //ss error al cargar la agenda
     else {
       await flowDynamic('Servicio no disponible, intenta más tarde')
-      await flowDynamic(mensajeAyuda)
+      await flowDynamic(MENSAJES.AYUDA)
       reset(ctx, gotoFlow, time) //FF IDLE RESET
       return gotoFlow(fluIAEntrada)
     }
@@ -116,7 +115,6 @@ export const fluConsultarDisponibles = addKeyword(EVENTS.ACTION)
     { capture: true },
     async (ctx, { flowDynamic, endFlow, gotoFlow, fallBack, provider, state }) => {
       reset(ctx, gotoFlow, time) //FF IDLE RESET
-      provider.vendor.sendPresenceUpdate('composing', ctx.key.remoteJid)
       const contexto = {
         estado: 'AGENDAR',
         agenda: state.get('agendaDisp')
@@ -125,7 +123,7 @@ export const fluConsultarDisponibles = addKeyword(EVENTS.ACTION)
       //ss error contactando IA
       if (respuesta === null) {
         await flowDynamic('Servicio no disponible, intenta más tarde')
-        await flowDynamic(mensajeAyuda)
+        await flowDynamic(MENSAJES.AYUDA)
         reset(ctx, gotoFlow, time) //FF IDLE RESET
         return gotoFlow(fluIAEntrada)
       }
@@ -155,15 +153,35 @@ export const fluConsultarDisponibles = addKeyword(EVENTS.ACTION)
           const _res = await AgendarCita(_cita)
           //ss si se logra agendar
           if (_res) {
+            //noticar agendar
+            if (INFO.NOTI_AGENDAR) {
+              const _msjCan = `Se acaba de agendar cita para el día *${_cita.FECHA}* a la  hora ${_cita.HORA}\n Desde el número de teléfono: *${ctx.from}*\n a Nombre de: *${_cita.NOMBRE}*`
+              const msj = await EnviarMensaje(INFO.NUMERO_CONTACTO, _msjCan)
+              if (msj !== 'OK') {
+                console.warn(
+                  'No se pudo enviar mensaje de notificación de cancelación a:' + INFO.NUMERO_CONTACTO
+                )
+              }
+            }
             await flowDynamic('✅ Cita agendada con éxito')
             reset(ctx, gotoFlow, time) //FF IDLE RESET
-            await flowDynamic(mensajeAyuda)
+            await flowDynamic(MENSAJES.AYUDA)
             return gotoFlow(fluIAEntrada)
           }
           //ss error al agendar
           else {
+            //error al agendar
+            if (INFO.NOTI_AGENDAR) {
+              const _msjCan = `NO SE LOGRO agendar cita para el día *${_cita.FECHA}* a la  hora ${_cita.HORA}\n Desde el número de teléfono: *${ctx.from}*\n a Nombre de: *${_cita.NOMBRE}*`
+              const msj = await EnviarMensaje(INFO.NUMERO_CONTACTO, _msjCan)
+              if (msj !== 'OK') {
+                console.warn(
+                  'No se pudo enviar mensaje de notificación de cancelación a:' + INFO.NUMERO_CONTACTO
+                )
+              }
+            }
             await flowDynamic('⚠️ Error al agendar cita')
-            await flowDynamic(mensajeAyuda)
+            await flowDynamic(MENSAJES.AYUDA)
             return gotoFlow(fluIAEntrada)
           }
         }
@@ -192,7 +210,7 @@ export const fluCitasActuales = addKeyword(EVENTS.ACTION)
       //ss no cuenta con citas
       else {
         await flowDynamic('🗓️ No cuentas con citas en este momento')
-        await flowDynamic(mensajeAyuda)
+        await flowDynamic(MENSAJES.AYUDA)
         reset(ctx, gotoFlow, time) //FF IDLE RESET
         return gotoFlow(fluIAEntrada)
       }
@@ -200,7 +218,7 @@ export const fluCitasActuales = addKeyword(EVENTS.ACTION)
     //ss no se puede cargar la agenda
     else {
       await flowDynamic('Servicio no disponible, intenta más tarde')
-      await flowDynamic(mensajeAyuda)
+      await flowDynamic(MENSAJES.AYUDA)
       reset(ctx, gotoFlow, time) //FF IDLE RESET
       return gotoFlow(fluIAEntrada)
     }
@@ -209,7 +227,6 @@ export const fluCitasActuales = addKeyword(EVENTS.ACTION)
     { capture: true },
     async (ctx, { flowDynamic, endFlow, gotoFlow, fallBack, provider, state }) => {
       reset(ctx, gotoFlow, time) //FF IDLE RESET
-      provider.vendor.sendPresenceUpdate('composing', ctx.key.remoteJid)
       const contexto = {
         estado: 'MODIFICAR',
         agenda: state.get('citasActuales')
@@ -218,7 +235,7 @@ export const fluCitasActuales = addKeyword(EVENTS.ACTION)
       //ss error contactando IA
       if (respuesta === null) {
         await flowDynamic('Servicio no disponible, intenta más tarde')
-        await flowDynamic(mensajeAyuda)
+        await flowDynamic(MENSAJES.AYUDA)
         reset(ctx, gotoFlow, time) //FF IDLE RESET
         return gotoFlow(fluIAEntrada)
       }
@@ -248,15 +265,35 @@ export const fluCitasActuales = addKeyword(EVENTS.ACTION)
           //ss si se logra agendar
           if (_res) {
             await flowDynamic('✅ Cita cancelada con éxito')
-            await flowDynamic(mensajeAyuda)
+            await flowDynamic(MENSAJES.AYUDA)
             reset(ctx, gotoFlow, time) //FF IDLE RESET
+            //noticar cancelar
+            if (INFO.NOTI_CANCELAR) {
+              const _msjCan = `Se acaba de cancelar cita del día *${_cita.FECHA}* de la  hora ${_cita.HORA}\n Desde el número de teléfono: *${ctx.from}*`
+              const msj = await EnviarMensaje(INFO.NUMERO_CONTACTO, _msjCan)
+              if (msj !== 'OK') {
+                console.warn(
+                  'No se pudo enviar mensaje de notificación de cancelación a:' + INFO.NUMERO_CONTACTO
+                )
+              }
+            }
             return gotoFlow(fluIAEntrada)
           }
           //ss error al agendar
           else {
             await flowDynamic('⚠️ Error al cancelar cita')
-            await flowDynamic(mensajeAyuda)
+            await flowDynamic(MENSAJES.AYUDA)
             reset(ctx, gotoFlow, time) //FF IDLE RESET
+            //noticar error
+            if (INFO.NOTI_CANCELAR) {
+              const _msjCan = `NO SE PUDO -  cancelar cita del día *${_cita.FECHA}* de la  hora *${_cita.HORA}*\n Desde el número de teléfono: *${ctx.from}*`
+              const msj = await EnviarMensaje(INFO.NUMERO_CONTACTO, _msjCan)
+              if (msj !== 'OK') {
+                console.warn(
+                  'No se pudo enviar mensaje de notificación de cancelación a:' + INFO.NUMERO_CONTACTO
+                )
+              }
+            }
             return gotoFlow(fluIAEntrada)
           }
         }

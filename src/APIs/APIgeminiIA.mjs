@@ -46,7 +46,7 @@ function GernerarConfig(guion) {
 }
 //TT Configuracion
 const generationConfig = {
-  temperature: 0.9,
+  temperature: 0.1,
   topP: 0.9,
   topK: 64,
   maxOutputTokens: 8192,

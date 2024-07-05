@@ -1,4 +1,6 @@
+import 'dotenv/config'
 import { FormatoValido } from '../funciones/tiempo.mjs'
+import { INFO } from '../sistema/textos.mjs'
 
 //TT FORMATAER DATOS DE AGENDA
 export function FormatearAgenda(agenda) {
@@ -24,7 +26,8 @@ export function FormatearAgenda(agenda) {
 }
 
 //TT FILTRAR LISTA DE CITAS DISPONIBLES
-export function CitasLibre(agenda) {
+export function CitasLibre(agd) {
+  const agenda = AgendaApartirDeHoy(agd)
   let txt = ''
   let cabeza = 'FECHA'
   let total = ''
@@ -44,9 +47,38 @@ export function CitasLibre(agenda) {
   if (cont === 0) {
     return null
   }
-  console.log('Citas disponibles: ', total)
+  //console.log('Citas disponibles: ', total)
   return [txt, total]
 }
+//ss obtener fechas actuales
+function AgendaApartirDeHoy(agenda) {
+  const fechaActual = new Date()
+  fechaActual.setHours(0, 0, 0, 0)
+  console.log(fechaActual)
+  let fechaLimite = null
+  if (INFO.RANGO_DIAS >= 0) {
+    fechaLimite = new Date(fechaActual)
+    fechaLimite.setDate(fechaActual.getDate() + INFO.RANGO_DIAS)
+  } else {
+    fechaLimite = new Date(fechaActual)
+    fechaLimite.setDate(fechaActual.getDate() + 30)
+  }
+  const _agenda = []
+  for (let i = 0; i < agenda.length; i++) {
+    const partesFecha = agenda[i].FECHA.split('/')
+    const dia = parseInt(partesFecha[0], 10)
+    const mes = parseInt(partesFecha[1], 10) - 1 // Meses en Date empiezan en 0
+    const anio = parseInt(partesFecha[2], 10)
+    const fechaObj = new Date(anio, mes, dia)
+    console.log(fechaObj)
+
+    if (fechaObj >= fechaActual && fechaObj <= fechaLimite) {
+      _agenda.push(agenda[i])
+    }
+  }
+  return _agenda
+}
+
 //TT FILTAR CITAS ACTUALES
 export function CitasActuales(agenda, num) {
   let citas = ''
@@ -64,7 +96,7 @@ export function CitasActuales(agenda, num) {
   return citas
 }
 
-//TT LIMPIAR AGENDA
+//TT LIMPIAR AGENDA**********revisar implementacion
 export function LimpiarAgenda(agenda) {
   const data = []
   for (let i = 0; i < agenda.length; i++) {

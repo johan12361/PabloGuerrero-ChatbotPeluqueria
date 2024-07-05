@@ -35,6 +35,7 @@ export function ObtenerHoraActual() {
 
   return horaFormateada
 }
+
 //TT COMPARA FECHAS
 export function CompararFechas(fechaString1, fechaString2) {
   // Convertir los strings a objetos Date
