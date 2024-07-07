@@ -27,5 +27,6 @@ RUN apk add --no-cache
 COPY --from=build /app/ /app
 # Exponer el puerto de la aplicación
 EXPOSE 3000
+EXPOSE 3001
 # Comando para ejecutar la aplicación
 CMD ["npm", "start"]
