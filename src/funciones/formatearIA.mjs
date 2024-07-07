@@ -2,7 +2,7 @@ import 'dotenv/config'
 import { FormatoValido } from '../funciones/tiempo.mjs'
 import { INFO } from '../sistema/textos.mjs'
 
-//TT FORMATAER DATOS DE AGENDA
+//TT FORMATAER DATOS DE AGENDA PARA EVITAR DATOS VACIOS
 export function FormatearAgenda(agenda) {
   for (let i = 0; i < agenda.length; i++) {
     if (agenda[i].FECHA !== '') {
@@ -47,14 +47,12 @@ export function CitasLibre(agd) {
   if (cont === 0) {
     return null
   }
-  //console.log('Citas disponibles: ', total)
   return [txt, total]
 }
 //ss obtener fechas actuales
 function AgendaApartirDeHoy(agenda) {
   const fechaActual = new Date()
   fechaActual.setHours(0, 0, 0, 0)
-  console.log(fechaActual)
   let fechaLimite = null
   if (INFO.RANGO_DIAS >= 0) {
     fechaLimite = new Date(fechaActual)
@@ -70,8 +68,6 @@ function AgendaApartirDeHoy(agenda) {
     const mes = parseInt(partesFecha[1], 10) - 1 // Meses en Date empiezan en 0
     const anio = parseInt(partesFecha[2], 10)
     const fechaObj = new Date(anio, mes, dia)
-    console.log(fechaObj)
-
     if (fechaObj >= fechaActual && fechaObj <= fechaLimite) {
       _agenda.push(agenda[i])
     }

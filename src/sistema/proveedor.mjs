@@ -1,3 +1,4 @@
+//TT ENUN DE TIPOS DE PROVEEDOR
 export const ENUNPROV = {
   BAILEYS: 'Baileys'
 }
@@ -6,9 +7,10 @@ export const PROVEEDOR = {
   name: '',
   prov: null
 }
-//TT ENVIAR MENSAJE
+
+//TT ENVIAR MENSAJE DE TEXTO
 export async function EnviarMensaje(num, msj) {
-  //ss si es Baileys
+  //ss si el proveedr es Baileys
   if (PROVEEDOR.name === ENUNPROV.BAILEYS) {
     const _num = num + '@s.whatsapp.net'
     try {

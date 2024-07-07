@@ -1,7 +1,7 @@
 import { ACTUALIZAR } from './textos.mjs'
 
 //TT ESTADO CONEXION
-export function ESTADO_CONEXION(data) {
+export function ESTADO_CONEXION(data, seg = 60) {
   let escuchar = false
   setInterval(() => {
     // SS sin conexion
@@ -17,5 +17,5 @@ export function ESTADO_CONEXION(data) {
       ACTUALIZAR()
       escuchar = false
     }
-  }, 20 * 1000)
+  }, seg * 1000)
 }

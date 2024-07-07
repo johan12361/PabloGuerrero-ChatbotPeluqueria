@@ -14,8 +14,14 @@ export const INFO = {
   RANGO_DIAS: 0,
   NUMERO_CONTACTO: 'X',
   URL_DOC_INFO: '',
-  NOTI_AGENDAR: '',
-  NOTI_CANCELAR: ''
+  NOTI_AGENDAR: false,
+  NOTI_CANCELAR: false
+}
+//TT NOTIFICACION
+export const NOTIFICACION = {
+  NOTIFICAR: false,
+  HORA: '',
+  MINUTO: ''
 }
 
 //TT ACTUALIZAR
@@ -28,7 +34,7 @@ export async function ACTUALIZAR() {
     MENSAJES.SIN_CITAS_DISP = msj[0].CITAS_NO_DISPONIBLES
     MENSAJES.AYUDA = msj[0].AYUDA
   }
-  console.log(MENSAJES)
+  console.table(MENSAJES)
   const inf = await ObtenerDatos(process.env.PAG_INFO)
   if (msj !== null) {
     INFO.RANGO_DIAS = parseInt(inf[0].RANGO_DIAS, 10)
@@ -44,6 +50,16 @@ export async function ACTUALIZAR() {
     } else {
       INFO.NOTI_CANCELAR = false
     }
+    //SS NOTIFICACION DE RECORDATORIO
+    if (inf[0].NOTIFICAR === 'true') {
+      NOTIFICACION.NOTIFICAR = true
+    } else {
+      NOTIFICACION.NOTIFICAR = false
+    }
+    const _hora = inf[0].HORA_NOTI.split(':')
+    NOTIFICACION.HORA = parseInt(_hora[0], 10)
+    NOTIFICACION.MINUTO = parseInt(_hora[1], 10)
   }
-  console.log(INFO)
+  console.table(INFO)
+  console.table(NOTIFICACION)
 }
