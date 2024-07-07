@@ -3,8 +3,8 @@ import 'dotenv/config'
 //TT MODULOS
 import { ObtenerDatos } from '../APIs/APIGoogleApp.mjs'
 import { ObtenerFechaActual, CompararFechas, Esperar } from '../funciones/tiempo.mjs'
-//import { EnviarMensaje } from '../sistema/proveedor.mjs'
-import { NOTIFICACION } from '../sistema/textos.mjs'
+import { EnviarMensaje } from '../sistema/proveedor.mjs'
+import { NOTIFICACION, MENSAJES } from '../sistema/textos.mjs'
 
 //TT VARIABLES
 const intMensajes = 60 //FF MOCIDIFICAR****************************************
@@ -53,6 +53,13 @@ async function EnviarNotificacion(AGENDA) {
           console.info(
             `enviando recordatorio a: ${AGENDA[i].NOMBRE} con numero: ${AGENDA[i].TELEFONO} la cita es a las: ${AGENDA[i].HORA}`
           )
+          //ss enviar recordatorio
+          const _res = await EnviarMensaje(AGENDA[i].TELEFONO, MENSAJES.RECORDATORIO)
+          if (_res === 'OK') {
+            console.info(`recordatorio enviado correctamente a: ${AGENDA[i].TELEFONO}`)
+          } else {
+            console.warn(`no se logro enviar recordatorio a:  ${AGENDA[i].TELEFONO}`)
+          }
           contar++
         } else {
           console.warn('se cancelo envio de recordarorios')
