@@ -1,6 +1,7 @@
 import 'dotenv/config'
 //TT MODULOS
 import { ObtenerDatos } from '../APIs/APIGoogleApp.mjs'
+import { ReiniciarCron } from '../funciones/notificar.mjs'
 //TT MENSAJES
 export const MENSAJES = {
   SALUDO: '',
@@ -62,4 +63,7 @@ export async function ACTUALIZAR() {
   }
   console.table(INFO)
   console.table(NOTIFICACION)
+
+  //SS REINICIAR CRON
+  ReiniciarCron()
 }
