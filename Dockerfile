@@ -26,7 +26,6 @@ RUN apk add --no-cache
 # Copiar los archivos construidos desde la etapa de build
 COPY --from=build /app/ /app
 # Exponer el puerto de la aplicación
-EXPOSE 8080
-EXPOSE 3001
+EXPOSE 3000
 # Comando para ejecutar la aplicación
 CMD ["npm", "start"]

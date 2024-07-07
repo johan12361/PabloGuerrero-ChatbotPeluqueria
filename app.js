@@ -1,7 +1,7 @@
 import { createBot, createProvider, createFlow, MemoryDB } from '@builderbot/bot'
 import { BaileysProvider } from '@builderbot/provider-baileys'
 // TT MODULOS
-import './src/sistema/restAPI.mjs'
+import { APIREST } from './src/sistema/restAPI.mjs'
 import { PROVEEDOR, ENUNPROV } from './src/sistema/proveedor.mjs'
 import { ESTADO_CONEXION } from './src/sistema/estado_Conexion.mjs'
 import { CRONO } from './src/funciones/notificar.mjs'
@@ -23,7 +23,7 @@ const FLUJOS_ENTRADA = [
   flowBienvenidad
 ]
 
-const PORT = process.env.PORT ?? 8080
+const PORT = process.env.PORT ?? 3000
 
 // TT INICIAR BOT
 const main = async () => {
@@ -59,6 +59,8 @@ const main = async () => {
       }
     }
   )
+
+  APIREST(adapterProvider)
 
   httpServer(+PORT)
 }
