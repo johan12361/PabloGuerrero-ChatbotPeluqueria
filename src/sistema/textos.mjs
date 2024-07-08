@@ -14,7 +14,6 @@ export const MENSAJES = {
 export const INFO = {
   RANGO_DIAS: 0,
   NUMERO_CONTACTO: 'X',
-  URL_DOC_INFO: '',
   NOTI_AGENDAR: false,
   NOTI_CANCELAR: false
 }
@@ -40,7 +39,6 @@ export async function ACTUALIZAR() {
   if (msj !== null) {
     INFO.RANGO_DIAS = parseInt(inf[0].RANGO_DIAS, 10)
     INFO.NUMERO_CONTACTO = inf[0].NUMERO_CONTACTO
-    INFO.URL_DOC_INFO = inf[0].URL_DOC_INFO
     if (inf[0].NOTI_AGENDAR === 'true') {
       INFO.NOTI_AGENDAR = true
     } else {
