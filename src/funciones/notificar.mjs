@@ -16,8 +16,8 @@ let PROV = null
 export async function CRONO(proveedor) {
   PROV = proveedor
   //SS Comprobar que haya un tiempo valido
-  if (NOTIFICACION.NOTIFICAR) {
-    TEREANOTI = cron.schedule(`${NOTIFICACION.MINUTO} ${NOTIFICACION.HORA} * * *`, async () => {
+  TEREANOTI = cron.schedule(`${NOTIFICACION.MINUTO} ${NOTIFICACION.HORA} * * *`, async () => {
+    if (NOTIFICACION.NOTIFICAR) {
       //SS Si esta conectado
       if (proveedor.store?.state?.connection === 'open') {
         const agenda = await ObtenerDatos()
@@ -30,8 +30,8 @@ export async function CRONO(proveedor) {
       } else {
         console.log('sin conectar a proveedor')
       }
-    })
-  }
+    }
+  })
 }
 
 //TT ENVIAR NOTIFICACION
@@ -78,10 +78,12 @@ function ComprobarEstructura(objeto) {
 
 //TT ACTUALIZAR CRONO
 export function ReiniciarCron() {
-  try {
-    TEREANOTI.stop()
-    CRONO(PROV)
-  } catch (error) {
-    console.error('no se pudo reiniciar CRON', error)
+  if (TEREANOTI !== null && PROV !== null) {
+    try {
+      TEREANOTI.stop()
+      CRONO(PROV)
+    } catch (error) {
+      console.error('no se pudo reiniciar CRON', error)
+    }
   }
 }

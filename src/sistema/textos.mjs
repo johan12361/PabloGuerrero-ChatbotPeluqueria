@@ -21,8 +21,8 @@ export const INFO = {
 //TT NOTIFICACION
 export const NOTIFICACION = {
   NOTIFICAR: false,
-  HORA: '',
-  MINUTO: ''
+  HORA: '8',
+  MINUTO: '0'
 }
 
 //TT ACTUALIZAR
