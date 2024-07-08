@@ -23,7 +23,6 @@ export async function CRONO(proveedor) {
         const agenda = await ObtenerDatos()
         if (agenda !== null) {
           //SS Guardar agenda
-          console.log('enviando')
           EnviarNotificacion(agenda)
         } else {
           console.error('Error al conectar con API')
@@ -57,10 +56,10 @@ async function EnviarNotificacion(AGENDA) {
           const _res = await EnviarMensaje(AGENDA[i].TELEFONO, MENSAJES.RECORDATORIO)
           if (_res === 'OK') {
             console.info(`recordatorio enviado correctamente a: ${AGENDA[i].TELEFONO}`)
+            contar++
           } else {
             console.warn(`no se logro enviar recordatorio a:  ${AGENDA[i].TELEFONO}`)
           }
-          contar++
         } else {
           console.warn('se cancelo envio de recordarorios')
         }
@@ -80,8 +79,11 @@ function ComprobarEstructura(objeto) {
 //TT ACTUALIZAR CRONO
 export function ReiniciarCron() {
   if (TEREANOTI !== null && PROV !== null) {
-    //agregar try
-    TEREANOTI.stop()
-    CRONO(PROV)
+    try {
+      TEREANOTI.stop()
+      CRONO(PROV)
+    } catch (error) {
+      console.error('no se pudo reiniciar CRON', error)
+    }
   }
 }
