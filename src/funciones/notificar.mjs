@@ -10,7 +10,6 @@ import { NOTIFICACION, MENSAJES } from '../sistema/textos.mjs'
 const intMensajes = 60 //FF MOCIDIFICAR****************************************
 export let TEREANOTI = null
 let PROV = null
-//const numero = '573013523033' + '@s.whatsapp.net'
 
 //TT EVENTO CRONO
 export async function CRONO(proveedor) {
