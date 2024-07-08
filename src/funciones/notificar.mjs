@@ -1,7 +1,7 @@
 import cron from 'node-cron'
 import 'dotenv/config'
 //TT MODULOS
-import { ObtenerDatos } from '../APIs/APIGoogleApp.mjs'
+import { ObtenerDatos, ActualizarCita } from '../APIs/APIGoogleApp.mjs'
 import { ObtenerFechaActual, CompararFechas, Esperar } from '../funciones/tiempo.mjs'
 import { EnviarMensaje } from '../sistema/proveedor.mjs'
 import { NOTIFICACION, MENSAJES } from '../sistema/textos.mjs'
@@ -55,6 +55,7 @@ async function EnviarNotificacion(AGENDA) {
           const _res = await EnviarMensaje(AGENDA[i].TELEFONO, MENSAJES.RECORDATORIO)
           if (_res === 'OK') {
             console.info(`recordatorio enviado correctamente a: ${AGENDA[i].TELEFONO}`)
+            EnviarEstadoNoti(AGENDA[i])
             contar++
           } else {
             console.warn(`no se logro enviar recordatorio a:  ${AGENDA[i].TELEFONO}`)
@@ -73,6 +74,15 @@ async function EnviarNotificacion(AGENDA) {
 function ComprobarEstructura(objeto) {
   const propiedadesNecesarias = ['FECHA', 'HORA', 'NOMBRE', 'TELEFONO', 'ESTADO', 'NOTIFICADO']
   return propiedadesNecesarias.every((propiedad) => propiedad in objeto && objeto[propiedad] !== '')
+}
+
+//TT ACTUALIZAR ESTADO NOTIFICADO
+async function EnviarEstadoNoti(obj) {
+  obj.NOTIFICADO = 'SI'
+  const res = await ActualizarCita(obj)
+  if (!res) {
+    console.warn('no se logoro actualizar estado notificado', obj)
+  }
 }
 
 //TT ACTUALIZAR CRONO

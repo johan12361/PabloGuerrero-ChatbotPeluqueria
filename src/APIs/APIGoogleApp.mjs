@@ -31,8 +31,6 @@ export async function ObtenerDatos(pag = process.env.PAG_ACTUA) {
     return null
   }
 }
-//FF Pruebas
-//await ObtenerDatos(process.env.PAG_ACTUA)
 
 //TT AGENDAR CITA
 export async function AgendarCita(obj) {
@@ -85,6 +83,40 @@ export async function CancelarCita(obj) {
       return true
     } else {
       console.error(`llama de cancelar cita error: ${res}`)
+      return false
+    }
+  } catch (error) {
+    console.error('Error:', error)
+    return false
+  }
+}
+
+//TT NOTIFICAR
+export async function ActualizarCita(obj) {
+  try {
+    const data = JSON.parse(JSON.stringify(DATOS))
+    data.functionName = 'ActualizarCita'
+    data.pagina = process.env.PAG_ACTUA
+    //objeto
+    data.fecha = obj.FECHA
+    data.hora = obj.HORA
+    data.nombre = obj.NOMBRE
+    data.telefono = obj.TELEFONO
+    data.estado = obj.ESTADO
+    data.notificado = obj.NOTIFICADO
+
+    console.log('envia', data)
+    const queryString = Object.keys(data)
+      .map((key) => key + '=' + encodeURIComponent(data[key]))
+      .join('&')
+    const response = await fetch(urlApp + queryString)
+    const res = await response.text()
+
+    if (res === 'OK') {
+      console.info(`llamada de actualizar cita correta: ${res}`)
+      return true
+    } else {
+      console.error(`llama de actualizar cita error: ${res}`)
       return false
     }
   } catch (error) {
