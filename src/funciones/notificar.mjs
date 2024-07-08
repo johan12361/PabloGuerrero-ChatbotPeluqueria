@@ -78,12 +78,10 @@ function ComprobarEstructura(objeto) {
 
 //TT ACTUALIZAR CRONO
 export function ReiniciarCron() {
-  if (TEREANOTI !== null && PROV !== null) {
-    try {
-      TEREANOTI.stop()
-      CRONO(PROV)
-    } catch (error) {
-      console.error('no se pudo reiniciar CRON', error)
-    }
+  try {
+    TEREANOTI.stop()
+    CRONO(PROV)
+  } catch (error) {
+    console.error('no se pudo reiniciar CRON', error)
   }
 }
