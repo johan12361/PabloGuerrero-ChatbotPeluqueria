@@ -1,10 +1,11 @@
 import 'dotenv/config'
+//TT MODULES
 import { FormatearAgenda } from '../funciones/formatearIA.mjs'
 
 //TT URL API
 const urlApp = process.env.GOOGLE_APP_URL + '?'
 
-//TT PETICIONES
+//TT PETICIONES SHEET
 const DATOS = {
   functionName: 'ObtenerDatos',
   urlSheet: process.env.SHEET_URL
@@ -122,5 +123,25 @@ export async function ActualizarCita(obj) {
   } catch (error) {
     console.error('Error:', error)
     return false
+  }
+}
+
+//TT OBTENER INFO DOCS
+export async function ObtenerTxtDoc(url) {
+  try {
+    const data = {
+      functionName: 'ObtenerDoc',
+      urlDoc: url
+    }
+    const queryString = Object.keys(data)
+      .map((key) => key + '=' + encodeURIComponent(data[key]))
+      .join('&')
+    const response = await fetch(urlApp + queryString)
+    const res = await response.text()
+    console.info(`Datos cargados: ${url}`)
+    return res
+  } catch (error) {
+    console.error('Error:', error)
+    return null
   }
 }

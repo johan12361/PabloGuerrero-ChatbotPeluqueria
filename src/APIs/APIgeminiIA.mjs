@@ -4,6 +4,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 //TT MODULOS
 import { BorrarSaltos } from '../funciones/formatearIA.mjs'
 import { MENSAJES } from '../sistema/textos.mjs'
+import { TXTREF } from '../sistema/textos.mjs'
 //TT Credenciales
 const apiKey = process.env.GEMINI_API_KEY
 const genAI = new GoogleGenerativeAI(apiKey)
@@ -24,9 +25,15 @@ const GUIONES = {
 function GernerarConfig(guion) {
   let config = null
   if (guion.estado === 'WELCOME') {
+    let txt = GUIONES.WELCOME.replace('#SALUDO#', MENSAJES.SALUDO)
+    //agregar informacion de referencia
+    if (TXTREF.INFOBUSS !== '') {
+      txt = txt + TXTREF.INFOBUSS
+    }
+    //cargar configuracion
     config = genAI.getGenerativeModel({
       model: 'gemini-1.5-flash',
-      systemInstruction: GUIONES.WELCOME.replace('#SALUDO#', MENSAJES.SALUDO)
+      systemInstruction: txt
     })
   } else if (guion.estado === 'AGENDAR') {
     const _txt = GUIONES.AGENDAR.replace('#AGENDA#', guion.agenda)
@@ -46,10 +53,10 @@ function GernerarConfig(guion) {
 }
 //TT Configuracion
 const generationConfig = {
-  temperature: 0.1,
+  temperature: 0.2,
   topP: 0.9,
   topK: 64,
-  maxOutputTokens: 8192,
+  maxOutputTokens: 1000,
   responseMimeType: 'text/plain'
 }
 // SS obtener id
