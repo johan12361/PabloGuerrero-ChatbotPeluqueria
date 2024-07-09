@@ -1,6 +1,6 @@
 import 'dotenv/config'
 //TT MODULOS
-import { ActuaInfo, ActuaMsj } from './textos.mjs'
+import { ActuaInfo, ActuaMsj, ActuaTxt } from './textos.mjs'
 
 export function APIREST(PROV) {
   //TT ACTUALIZAR INFO
@@ -47,7 +47,7 @@ export function APIREST(PROV) {
     if (clave === process.env.REST_CLAVE_ACTUALIZAR) {
       console.log(`DATO RECIBIDO: actualizar INFOREF con clave = ${clave}`)
       try {
-        await ActuaMsj()
+        await ActuaTxt()
         console.log('la actualización de INFOREF se realizó con éxito.')
         res.end('la actualización se realizó con éxito.')
       } catch (error) {
