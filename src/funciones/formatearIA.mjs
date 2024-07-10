@@ -49,26 +49,36 @@ export function CitasLibre(agd) {
   }
   return [txt, total]
 }
+
 //ss obtener fechas actuales
 function AgendaApartirDeHoy(agenda) {
-  const fechaActual = new Date()
-  fechaActual.setHours(0, 0, 0, 0)
+  //fechas
+  const fechaMinima = new Date()
+  const [hours, minutes] = INFO.RANGO_HORAS.split(':').map(Number)
   let fechaLimite = null
+
   if (INFO.RANGO_DIAS >= 0) {
-    fechaLimite = new Date(fechaActual)
-    fechaLimite.setDate(fechaActual.getDate() + INFO.RANGO_DIAS)
+    fechaLimite = new Date(fechaMinima)
+    fechaLimite.setDate(fechaMinima.getDate() + INFO.RANGO_DIAS)
   } else {
-    fechaLimite = new Date(fechaActual)
-    fechaLimite.setDate(fechaActual.getDate() + 30)
+    fechaLimite = new Date(fechaMinima)
+    fechaLimite.setDate(fechaMinima.getDate() + 30)
   }
+  fechaMinima.setHours(fechaMinima.getHours() + hours)
+  fechaMinima.setMinutes(fechaMinima.getMinutes() + minutes)
+
   const _agenda = []
   for (let i = 0; i < agenda.length; i++) {
+    //fecha
     const partesFecha = agenda[i].FECHA.split('/')
     const dia = parseInt(partesFecha[0], 10)
     const mes = parseInt(partesFecha[1], 10) - 1 // Meses en Date empiezan en 0
     const anio = parseInt(partesFecha[2], 10)
     const fechaObj = new Date(anio, mes, dia)
-    if (fechaObj >= fechaActual && fechaObj <= fechaLimite) {
+    const [hours, minutes] = agenda[i].HORA.split(':').map(Number)
+    fechaObj.setHours(hours, minutes)
+    //hora
+    if (fechaObj >= fechaMinima && fechaObj <= fechaLimite) {
       _agenda.push(agenda[i])
     }
   }
@@ -92,7 +102,7 @@ export function CitasActuales(agenda, num) {
   return citas
 }
 
-//TT LIMPIAR AGENDA**********revisar implementacion
+//FF LIMPIAR AGENDA**********revisar implementacion
 export function LimpiarAgenda(agenda) {
   const data = []
   for (let i = 0; i < agenda.length; i++) {

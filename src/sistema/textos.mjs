@@ -13,6 +13,7 @@ export const MENSAJES = {
 //TT INFO
 export const INFO = {
   RANGO_DIAS: 0,
+  RANGO_HORAS: '02:25',
   NUMERO_CONTACTO: 'X',
   NOTI_AGENDAR: false,
   NOTI_CANCELAR: false
@@ -44,6 +45,7 @@ export async function ACTUALIZAR() {
   const inf = await ObtenerDatos(process.env.PAG_INFO)
   if (inf !== null) {
     INFO.RANGO_DIAS = parseInt(inf[0].RANGO_DIAS, 10)
+    INFO.RANGO_HORAS = inf[0].RANGO_HORAS
     INFO.NUMERO_CONTACTO = inf[0].NUMERO_CONTACTO
     //transformar datos
     INFO.NOTI_AGENDAR = inf[0].NOTI_AGENDAR === 'true'
