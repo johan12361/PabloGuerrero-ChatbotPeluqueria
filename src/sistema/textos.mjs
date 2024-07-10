@@ -91,23 +91,13 @@ export async function ActuaInfo() {
   const inf = await ObtenerDatos(process.env.PAG_INFO)
   if (inf !== null) {
     INFO.RANGO_DIAS = parseInt(inf[0].RANGO_DIAS, 10)
+    INFO.RANGO_HORAS = inf[0].RANGO_HORAS
     INFO.NUMERO_CONTACTO = inf[0].NUMERO_CONTACTO
-    if (inf[0].NOTI_AGENDAR === 'true') {
-      INFO.NOTI_AGENDAR = true
-    } else {
-      INFO.NOTI_AGENDAR = false
-    }
-    if (inf[0].NOTI_CANCELAR === 'true') {
-      INFO.NOTI_CANCELAR = true
-    } else {
-      INFO.NOTI_CANCELAR = false
-    }
-    //SS NOTIFICACION DE RECORDATORIO
-    if (inf[0].NOTIFICAR === 'true') {
-      NOTIFICACION.NOTIFICAR = true
-    } else {
-      NOTIFICACION.NOTIFICAR = false
-    }
+    //transformar datos
+    INFO.NOTI_AGENDAR = inf[0].NOTI_AGENDAR === 'true'
+    INFO.NOTI_CANCELAR = inf[0].NOTI_CANCELAR === 'true'
+    NOTIFICACION.NOTIFICAR = inf[0].NOTIFICAR === 'true'
+    //asignar hora
     const _hora = inf[0].HORA_NOTI.split(':')
     NOTIFICACION.HORA = parseInt(_hora[0], 10)
     NOTIFICACION.MINUTO = parseInt(_hora[1], 10)
