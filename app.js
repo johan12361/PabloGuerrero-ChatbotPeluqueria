@@ -23,7 +23,7 @@ const FLUJOS_ENTRADA = [
   flowBienvenidad
 ]
 
-const PORT = (process.env.PORT = 3000)
+const PORT = process.env.PORT ?? 3000
 
 // TT INICIAR BOT
 const main = async () => {
@@ -50,13 +50,6 @@ const main = async () => {
       flow: adapterFlow,
       provider: adapterProvider,
       database: adapterDB
-    },
-    {
-      //control de frecuncia
-      queue: {
-        timeout: 20000,
-        concurrencyLimit: 50
-      }
     }
   )
 
