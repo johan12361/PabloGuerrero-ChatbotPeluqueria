@@ -29,7 +29,7 @@ const PORT = process.env.PORT ?? 3000
 const main = async () => {
   const adapterDB = new MemoryDB()
   const adapterFlow = createFlow(FLUJOS_ENTRADA)
-  const adapterProvider = createProvider(BaileysProvider, { timeRelease: 43200000 }) //limpiar memoria cada 12 horas
+  const adapterProvider = createProvider(BaileysProvider) //limpiar memoria cada 12 horas
 
   //SS COMPROBAR ESTADO DE CONEXION CADA X SEGUNDOS
   ESTADO_CONEXION(adapterProvider, 20)
