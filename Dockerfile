@@ -19,6 +19,9 @@ COPY . .
 # SS Etapa 2
 FROM node:18-alpine
 
+# Install PM2 globally using PNPM
+RUN npm install pm2 -g
+
 # Establecer el directorio de trabajo
 WORKDIR /app
 # Instalar dependencias del sistema
@@ -26,6 +29,10 @@ RUN apk add --no-cache
 # Copiar los archivos construidos desde la etapa de build
 COPY --from=build /app/ /app
 # Exponer el puerto de la aplicación
-EXPOSE 3000
+EXPOSE 3001
+# Conocer si esta en un un contenedor
+ENV RUNNING_IN_DOCKER=true
 # Comando para ejecutar la aplicación
-CMD ["npm", "start"]
+
+CMD ["pm2-runtime", "start", "app.js", "--cron", "0 3 * * *"]
+#CMD ["npm", "start"]

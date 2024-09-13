@@ -55,7 +55,7 @@ const main = async () => {
 
   APIREST(adapterProvider)
 
-  httpServer(+PORT)
+  httpServer(3001)
 }
 
 main()
